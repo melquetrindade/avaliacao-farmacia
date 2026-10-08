@@ -12,10 +12,35 @@ datasource db {
   provider = "postgresql"
 }
 
+model Administrador {
+  id           String   @id @default(uuid())
+  nome         String
+  email        String   @unique
+  senhaHash    String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Colaborador {
+  id          String                  @id @default(uuid())
+  nome        String
+  fotoUrl     String?
+  createdAt   DateTime                @default(now())
+  updatedAt   DateTime                @updatedAt
+
+  avaliacoes  AvaliacaoAtendimento[]
+}
+
 model AvaliacaoAtendimento {
-  id              String   @id @default(uuid())
-  createdAt       DateTime @default(now())
+  id              String      @id @default(uuid())
+  createdAt       DateTime    @default(now())
   atendimentoNota Int
   nps             Int
   melhoria        String[]
+
+  colaboradorId   String
+  colaborador     Colaborador  @relation(fields: [colaboradorId],references: [id])
+
+  @@index([colaboradorId])
+  @@index([createdAt])
 }
