@@ -13,12 +13,25 @@ datasource db {
 }
 
 model Administrador {
-  id           String   @id @default(uuid())
+  id           String    @id @default(uuid())
   nome         String
-  email        String   @unique
+  email        String    @unique
   senhaHash    String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  sessoes      Sessao[]
+}
+
+model Sessao {
+  id              String        @id @default(uuid())
+  tokenHash       String        @unique
+  administradorId String
+  expiresAt       DateTime
+  createdAt       DateTime      @default(now())
+  administrador   Administrador @relation(fields: [administradorId], references: [id], onDelete: Cascade)
+
+  @@index([administradorId])
+  @@index([expiresAt])
 }
 
 model Colaborador {

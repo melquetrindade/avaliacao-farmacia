@@ -1,4 +1,15 @@
+"use client";
+
+import { useActionState } from "react";
+import { login } from "../_actions/login";
+import { Alert } from "../_components/ui/alert";
+import { Button } from "../_components/ui/button";
+
+const initialState = { error: null };
+
 export default function Home() {
+  const [state, formAction, pending] = useActionState(login, initialState);
+
   return (
     <main className="flex min-h-screen items-center justify-center bg-background px-4 py-12">
       <section className="w-full max-w-md rounded-2xl border border-border bg-card p-8 shadow-lg shadow-primary/10">
@@ -15,7 +26,7 @@ export default function Home() {
           </p>
         </div>
 
-        <form action="/admin" method="post" className="space-y-5">
+        <form action={formAction} className="space-y-5">
           <div className="space-y-2">
             <label htmlFor="email" className="text-sm font-medium">
               Email
@@ -27,6 +38,7 @@ export default function Home() {
               autoComplete="username"
               placeholder="voce@exemplo.com"
               required
+              disabled={pending}
               className="h-10 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
             />
           </div>
@@ -42,16 +54,20 @@ export default function Home() {
               autoComplete="current-password"
               placeholder="Digite sua senha"
               required
+              disabled={pending}
               className="h-10 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
             />
           </div>
 
-          <button
+          {state.error && <Alert>{state.error}</Alert>}
+
+          <Button
             type="submit"
-            className="inline-flex h-10 w-full items-center justify-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+            disabled={pending}
+            className="h-10 w-full rounded-lg px-4"
           >
-            Entrar
-          </button>
+            {pending ? "Entrando..." : "Entrar"}
+          </Button>
         </form>
       </section>
     </main>
