@@ -1,5 +1,6 @@
 import { getSession } from "../../_lib/auth";
 import { redirect } from "next/navigation";
+import Image from "next/image";
 import { DashboardSidebar } from "./dashboard-sidebar";
 
 export default async function DashboardPage() {
@@ -10,24 +11,24 @@ export default async function DashboardPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#090b10] text-white">
+    <main className="min-h-screen bg-background text-foreground">
       <div className="min-h-screen lg:pl-72">
-        <header className="flex min-h-20 items-center justify-between gap-4 border-b border-white/10 px-4 sm:px-8 lg:px-10">
+        <header className="flex min-h-20 items-center justify-start gap-4 border-b border-border px-4 sm:px-8 lg:px-10">
           <div>
             <DashboardSidebar administratorName={administrator.nome} />
           </div>
           <div className="hidden lg:block" />
-          <div className="ml-auto text-right">
-            <h1 className="text-base font-semibold sm:text-lg">
-              Olá, bem-vindo!
-            </h1>
-            <p className="mt-1 text-xs text-white/60 sm:text-sm">
-              {new Intl.DateTimeFormat("pt-BR", {
-                weekday: "long",
-                day: "numeric",
-                month: "long",
-              }).format(new Date())}
-            </p>
+          <div className="flex min-w-0 items-center gap-3">
+            <Image
+              src="/logo.jfif"
+              alt=""
+              width={48}
+              height={48}
+              className="size-12 shrink-0 rounded-xl object-contain"
+            />
+            <span className="text-sm font-semibold leading-tight text-foreground sm:text-base">
+              Drogaria nossa senhora de fátima
+            </span>
           </div>
         </header>
 
@@ -35,8 +36,8 @@ export default async function DashboardPage() {
           aria-labelledby="dashboard-title"
           className="mx-auto w-full max-w-7xl p-4 sm:p-8 lg:p-10"
         >
-          <div className="rounded-2xl border border-white/10 bg-[#11141c] p-5 sm:p-8">
-            <p className="text-sm font-medium text-violet-300">
+          <div className="rounded-2xl border border-border bg-card p-5 sm:p-8">
+            <p className="text-sm font-medium text-primary">
               Visão geral
             </p>
             <h2
@@ -45,7 +46,7 @@ export default async function DashboardPage() {
             >
               Bem-vindo ao painel, {administrator.nome}
             </h2>
-            <p className="mt-3 max-w-2xl text-sm leading-6 text-white/60 sm:text-base">
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
               Acesse pelo menu lateral as ferramentas administrativas da
               avaliação da farmácia.
             </p>
