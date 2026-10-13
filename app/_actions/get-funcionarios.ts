@@ -9,6 +9,7 @@ export async function getFuncionarios() {
       id: true,
       nome: true,
       fotoUrl: true,
+      ativo: true,
     },
   });
 }

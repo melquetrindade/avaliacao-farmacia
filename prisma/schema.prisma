@@ -41,6 +41,7 @@ model Colaborador {
   fotoUrl         String?
   createdAt       DateTime                @default(now())
   updatedAt       DateTime                @updatedAt
+  ativo           Boolean @default(true)
 
   avaliacoes      AvaliacaoAtendimento[]
 }

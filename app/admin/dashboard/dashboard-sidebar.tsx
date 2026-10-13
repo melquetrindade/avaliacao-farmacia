@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { LayoutDashboard, LogOut, Menu } from "lucide-react";
+import { LayoutDashboard, LogOut, Menu, UserRound } from "lucide-react";
 import { logout } from "../../_actions/logout";
 import { Button } from "@/components/ui/button";
 import {
@@ -51,16 +51,6 @@ function SidebarContent({
         className="flex flex-1 flex-col gap-3 p-3"
       >
         <Link
-          href="/admin/funcionarios"
-          onClick={onNavigate}
-          aria-current="page"
-          className="flex min-h-11 items-center gap-3 rounded-lg bg-sidebar-accent px-3 text-sm font-medium text-sidebar-accent-foreground outline-none transition-colors hover:bg-sidebar-accent/80 focus-visible:ring-2 focus-visible:ring-sidebar-ring"
-        >
-          <LayoutDashboard aria-hidden="true" className="size-4" />
-          Funcionários
-        </Link>
-
-        <Link
           href="/admin/dashboard"
           onClick={onNavigate}
           aria-current="page"
@@ -68,6 +58,16 @@ function SidebarContent({
         >
           <LayoutDashboard aria-hidden="true" className="size-4" />
           Dashboard
+        </Link>
+
+        <Link
+          href="/admin/funcionarios"
+          onClick={onNavigate}
+          aria-current="page"
+          className="flex min-h-11 items-center gap-3 rounded-lg bg-sidebar-accent px-3 text-sm font-medium text-sidebar-accent-foreground outline-none transition-colors hover:bg-sidebar-accent/80 focus-visible:ring-2 focus-visible:ring-sidebar-ring"
+        >
+          <UserRound aria-hidden="true" className="size-4" />
+          Funcionários
         </Link>
       </nav>
 

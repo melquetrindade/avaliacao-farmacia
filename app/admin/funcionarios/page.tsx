@@ -6,10 +6,14 @@ import {
   CardContent,
   CardTitle,
 } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { getFuncionarios } from "../../_actions/get-funcionarios";
 import { getSession } from "../../_lib/auth";
 import { DashboardSidebar } from "../dashboard/dashboard-sidebar";
 import { FuncionarioFormDialog } from "./funcionario-form-dialog";
+import { EditarFuncionarioDialog } from "./editar-funcionario-dialog";
+import { ExcluirFuncionarioDialog } from "./excluir-funcionario-dialog";
+import { FuncionarioStatusButton } from "./funcionario-status-button";
 
 export default async function FuncionariosPage() {
   const administrator = await getSession();
@@ -49,10 +53,39 @@ export default async function FuncionariosPage() {
                         <UserRound aria-hidden="true" className="size-16" />
                       </div>
                     )}
+                    <Badge
+                      variant={funcionario.ativo ? "secondary" : "destructive"}
+                      className={
+                        funcionario.ativo
+                          ? "absolute top-3 left-3 border-emerald-200 bg-emerald-100 text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
+                          : "absolute top-3 left-3 border-red-200 bg-red-100 text-red-800 dark:border-red-800 dark:bg-red-950 dark:text-red-300"
+                      }
+                    >
+                      <span
+                        aria-hidden="true"
+                        className={`size-2 rounded-full ${
+                          funcionario.ativo ? "bg-emerald-500" : "bg-destructive"
+                        }`}
+                      />
+                      {funcionario.ativo ? "Ativo" : "Inativo"}
+                    </Badge>
                   </div>
                   <CardContent className="px-4 py-4 text-center">
                     <CardTitle>{funcionario.nome}</CardTitle>
                   </CardContent>
+
+                  <div className="flex flex-wrap justify-center gap-2 px-4 pb-4">
+                    <EditarFuncionarioDialog funcionario={funcionario} />
+                    <ExcluirFuncionarioDialog
+                      funcionarioId={funcionario.id}
+                      funcionarioNome={funcionario.nome}
+                    />
+                    <FuncionarioStatusButton
+                      key={`${funcionario.id}-${funcionario.ativo}`}
+                      funcionarioId={funcionario.id}
+                      ativo={funcionario.ativo}
+                    />
+                  </div>
                 </Card>
               ))}
             </div>
