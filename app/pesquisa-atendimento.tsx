@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { ArrowLeft, Check, Star, UserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -42,31 +42,72 @@ export function PesquisaAtendimento({
   funcionarios: Funcionario[];
 }) {
   const [ciclo, setCiclo] = useState(0);
-  const [mostrarConfirmacao, setMostrarConfirmacao] = useState(false);
+  const [mostrarAgradecimento, setMostrarAgradecimento] = useState(false);
+
+  useEffect(() => {
+    if (!mostrarAgradecimento) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setCiclo((atual) => atual + 1);
+      setMostrarAgradecimento(false);
+    }, 5000);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [mostrarAgradecimento]);
+
+  if (mostrarAgradecimento) {
+    return <TelaAgradecimento />;
+  }
 
   return (
     <PesquisaCiclo
       key={ciclo}
       funcionarios={funcionarios}
-      mostrarConfirmacao={mostrarConfirmacao}
-      onSelecionarFuncionario={() => setMostrarConfirmacao(false)}
-      onSucesso={() => {
-        setCiclo((atual) => atual + 1);
-        setMostrarConfirmacao(true);
-      }}
+      onSucesso={() => setMostrarAgradecimento(true)}
     />
+  );
+}
+
+function TelaAgradecimento() {
+  return (
+    <main
+      role="status"
+      aria-live="polite"
+      className="relative flex min-h-screen flex-col items-center justify-center bg-primary px-6 text-center text-primary-foreground"
+    >
+      <Image
+        src="/logo.jfif"
+        alt="Drogaria Nossa Senhora de Fátima"
+        width={80}
+        height={80}
+        className="absolute top-6 right-6 size-20 rounded-2xl object-contain sm:top-8 sm:right-8"
+      />
+      <div className="animate-in fade-in zoom-in-95 duration-500">
+        <span className="mx-auto flex size-24 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
+          <Check
+            aria-hidden="true"
+            className="size-14 animate-in zoom-in-50 duration-700"
+            strokeWidth={3}
+          />
+        </span>
+        <h1 className="mt-8 text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
+          Obrigado pela sua avaliação!
+        </h1>
+        <p className="mt-3 text-lg text-primary-foreground/80">
+          Sua opinião é muito importante para nós.
+        </p>
+      </div>
+    </main>
   );
 }
 
 function PesquisaCiclo({
   funcionarios,
-  mostrarConfirmacao,
-  onSelecionarFuncionario,
   onSucesso,
 }: {
   funcionarios: Funcionario[];
-  mostrarConfirmacao: boolean;
-  onSelecionarFuncionario: () => void;
   onSucesso: () => void;
 }) {
   const [etapa, setEtapa] = useState<Etapa>("funcionario");
@@ -110,10 +151,22 @@ function PesquisaCiclo({
   const funcionarioSelecionado = funcionarios.find(
     (funcionario) => funcionario.id === colaboradorId,
   );
+  const pergunta =
+    etapa === "funcionario"
+      ? "Quem atendeu você?"
+      : etapa === "atendimento"
+        ? "Como você avalia o atendimento de hoje?"
+        : etapa === "nps"
+          ? "De 0 a 10, quanto você recomendaria nossa farmácia?"
+          : "O que podemos melhorar?";
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-background px-4 py-8 text-foreground sm:px-6">
-      <div className="w-full max-w-2xl">
+      <div
+        className={
+          etapa === "funcionario" ? "w-full max-w-6xl" : "w-full max-w-2xl"
+        }
+      >
         <header className="mb-8 flex flex-col items-center text-center">
           <Image
             src="/logo.jfif"
@@ -123,103 +176,62 @@ function PesquisaCiclo({
             className="size-16 rounded-2xl object-contain"
             priority
           />
-          <p className="mt-4 text-sm font-semibold uppercase tracking-[0.16em] text-primary">
-            Drogaria Nossa Senhora de Fátima
-          </p>
-          <h1 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">
+          <h1 className="mt-2 text-2xl font-bold tracking-tight sm:text-1xl">
             Avaliação de atendimento
           </h1>
-          <p className="mt-2 max-w-md text-sm text-muted-foreground sm:text-base">
-            Sua opinião é importante para melhorarmos cada vez mais.
-          </p>
+          <h2 className="mt-2 text-xl font-semibold sm:text-2xl">{pergunta}</h2>
+          {etapa === "atendimento" && (
+            <p className="mt-2 text-sm text-muted-foreground">
+              Funcionário: {funcionarioSelecionado?.nome}
+            </p>
+          )}
+          {etapa === "melhoria" && (
+            <p className="mt-2 text-sm text-muted-foreground">
+              Você pode selecionar mais de uma opção.
+            </p>
+          )}
         </header>
 
-        {mostrarConfirmacao && etapa === "funcionario" && (
-          <p
-            role="status"
-            className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-center text-sm font-medium text-emerald-800 dark:border-emerald-900 dark:bg-emerald-950 dark:text-emerald-200"
-          >
-            Obrigado! Sua avaliação foi registrada. Você já pode iniciar uma
-            nova avaliação.
-          </p>
-        )}
-
-        <Card className="overflow-hidden rounded-3xl border-border shadow-lg shadow-primary/5">
-          <CardContent className="p-5 sm:p-8">
-            {etapa === "funcionario" ? (
-              <>
-                <div className="mb-6">
-                  <p className="text-sm font-medium text-primary">Pergunta 00</p>
-                  <h2 className="mt-2 text-xl font-semibold sm:text-2xl">
-                    Quem atendeu você?
-                  </h2>
-                  <p className="mt-2 text-sm text-muted-foreground">
-                    Selecione o funcionário que realizou seu atendimento.
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                  {funcionarios.map((funcionario) => (
-                    <button
-                      key={funcionario.id}
-                      type="button"
-                      onClick={() => {
-                        setColaboradorId(funcionario.id);
-                        onSelecionarFuncionario();
-                        setEtapa("atendimento");
-                      }}
-                      className="group flex min-h-40 flex-col items-center justify-center gap-3 rounded-2xl border border-border bg-card p-4 text-center transition hover:border-primary hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                    >
-                      {funcionario.fotoUrl ? (
-                        <Image
-                          src={funcionario.fotoUrl}
-                          alt=""
-                          width={88}
-                          height={88}
-                          unoptimized
-                          className="size-22 rounded-full object-cover ring-2 ring-border transition group-hover:ring-primary"
-                        />
-                      ) : (
-                        <span className="flex size-22 items-center justify-center rounded-full bg-muted text-muted-foreground ring-2 ring-border">
-                          <UserRound aria-hidden="true" className="size-10" />
-                        </span>
-                      )}
-                      <span className="text-sm font-semibold">
-                        {funcionario.nome}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="mb-6 flex items-start justify-between gap-4">
-                  <div>
-                    <p className="text-sm font-medium text-primary">
-                      Pergunta 0{etapaNumero}
-                    </p>
-                    <h2 className="mt-2 text-xl font-semibold sm:text-2xl">
-                      {etapa === "atendimento"
-                        ? "Como você avalia o atendimento de hoje?"
-                        : etapa === "nps"
-                          ? "De 0 a 10, quanto você recomendaria nossa farmácia?"
-                          : "O que podemos melhorar?"}
-                    </h2>
-                    {etapa === "atendimento" && (
-                      <p className="mt-2 text-sm text-muted-foreground">
-                        Funcionário: {funcionarioSelecionado?.nome}
-                      </p>
-                    )}
-                    {etapa === "melhoria" && (
-                      <p className="mt-2 text-sm text-muted-foreground">
-                        Você pode selecionar mais de uma opção.
-                      </p>
-                    )}
-                  </div>
-                  <span className="shrink-0 rounded-full bg-secondary px-3 py-1 text-xs font-medium text-secondary-foreground">
-                    {etapaNumero} de {nps !== null && nps > 4 ? "2" : "3"}
+        {etapa === "funcionario" ? (
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+            {funcionarios.map((funcionario) => (
+              <button
+                key={funcionario.id}
+                type="button"
+                onClick={() => {
+                  setColaboradorId(funcionario.id);
+                  setEtapa("atendimento");
+                }}
+                className="group flex min-h-40 flex-col items-center justify-center gap-3 rounded-2xl border border-border bg-card p-4 text-center transition hover:border-primary hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                {funcionario.fotoUrl ? (
+                  <Image
+                    src={funcionario.fotoUrl}
+                    alt=""
+                    width={88}
+                    height={88}
+                    unoptimized
+                    className="size-22 rounded-full object-cover ring-2 ring-border transition group-hover:ring-primary"
+                  />
+                ) : (
+                  <span className="flex size-22 items-center justify-center rounded-full bg-muted text-muted-foreground ring-2 ring-border">
+                    <UserRound aria-hidden="true" className="size-10" />
                   </span>
-                </div>
+                )}
+                <span className="text-sm font-semibold">
+                  {funcionario.nome}
+                </span>
+              </button>
+            ))}
+          </div>
+        ) : (
+          <Card className="overflow-hidden rounded-3xl border-border shadow-lg shadow-primary/5">
+            <CardContent className="p-5 sm:p-8">
+              <div className="mb-6 flex justify-end">
+                <span className="shrink-0 rounded-full bg-secondary px-3 py-1 text-xs font-medium text-secondary-foreground">
+                  {etapaNumero} de {nps !== null && nps > 4 ? "2" : "3"}
+                </span>
+              </div>
 
                 <form action={formAction}>
                   <input
@@ -320,10 +332,6 @@ function PesquisaCiclo({
                           </button>
                         ))}
                       </div>
-                      <div className="mt-3 flex justify-between text-xs text-muted-foreground">
-                        <span>Pouco provável</span>
-                        <span>Muito provável</span>
-                      </div>
                       <div className="mt-8 flex justify-between gap-3">
                         <Button
                           type="button"
@@ -415,10 +423,9 @@ function PesquisaCiclo({
                     </p>
                   )}
                 </form>
-              </>
-            )}
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        )}
 
         <footer className="mt-6 text-center text-xs text-muted-foreground">
           Obrigado por escolher nossa farmácia.
