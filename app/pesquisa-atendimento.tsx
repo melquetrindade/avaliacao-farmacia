@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useActionState, useEffect, useState } from "react";
-import { ArrowLeft, Check, Star, UserRound } from "lucide-react";
+import { ArrowLeft, Check, UserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -161,25 +161,30 @@ function PesquisaCiclo({
           : "O que podemos melhorar?";
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-background px-4 py-8 text-foreground sm:px-6">
+    <main className="flex min-h-screen flex-col items-center bg-background px-4 py-8 text-foreground sm:px-6">
+      <header className="fixed top-4 right-6 left-6 z-50 flex items-center justify-between gap-3 sm:right-8 sm:left-8">
+        <Image
+          src="/logo.jfif"
+          alt="Drogaria Nossa Senhora de Fátima"
+          width={64}
+          height={64}
+          className="size-12 shrink-0 rounded-2xl object-contain sm:size-16"
+          priority
+        />
+        <h1 className="text-right text-sm font-bold tracking-tight sm:text-2xl">
+          Avaliação de atendimento
+        </h1>
+      </header>
+
       <div
         className={
-          etapa === "funcionario" ? "w-full max-w-6xl" : "w-full max-w-2xl"
+          etapa === "funcionario"
+            ? "flex w-full flex-1 flex-col justify-center max-w-6xl"
+            : "flex w-full flex-1 flex-col justify-center max-w-2xl"
         }
       >
         <header className="mb-8 flex flex-col items-center text-center">
-          <Image
-            src="/logo.jfif"
-            alt="Drogaria Nossa Senhora de Fátima"
-            width={64}
-            height={64}
-            className="size-16 rounded-2xl object-contain"
-            priority
-          />
-          <h1 className="mt-2 text-2xl font-bold tracking-tight sm:text-1xl">
-            Avaliação de atendimento
-          </h1>
-          <h2 className="mt-2 text-xl font-semibold sm:text-2xl">{pergunta}</h2>
+          <h2 className="text-xl font-semibold sm:text-2xl">{pergunta}</h2>
           {etapa === "atendimento" && (
             <p className="mt-2 text-sm text-muted-foreground">
               Funcionário: {funcionarioSelecionado?.nome}
@@ -193,7 +198,7 @@ function PesquisaCiclo({
         </header>
 
         {etapa === "funcionario" ? (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
             {funcionarios.map((funcionario) => (
               <button
                 key={funcionario.id}
@@ -202,7 +207,7 @@ function PesquisaCiclo({
                   setColaboradorId(funcionario.id);
                   setEtapa("atendimento");
                 }}
-                className="group flex min-h-40 flex-col items-center justify-center gap-3 rounded-2xl border border-border bg-card p-4 text-center transition hover:border-primary hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="group flex min-h-40 flex-col items-center justify-center gap-3 rounded-2xl border border-border bg-card px-2 py-4 text-center transition hover:border-primary hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 {funcionario.fotoUrl ? (
                   <Image
@@ -261,35 +266,45 @@ function PesquisaCiclo({
 
                   {etapa === "atendimento" && (
                     <>
-                      <div className="grid gap-3">
+                      <div className="grid gap-3 sm:grid-cols-3">
                         {[
-                          { nota: 1, rotulo: "Ruim" },
-                          { nota: 2, rotulo: "Regular" },
-                          { nota: 3, rotulo: "Excelente" },
-                        ].map(({ nota, rotulo }) => (
+                          {
+                            nota: 1,
+                            rotulo: "Ruim",
+                            imagem: "/emoji_1_raiva.png",
+                          },
+                          {
+                            nota: 2,
+                            rotulo: "Regular",
+                            imagem: "/emoji_2_normal.png",
+                          },
+                          {
+                            nota: 3,
+                            rotulo: "Excelente",
+                            imagem: "/emoji_3_feliz.png",
+                          },
+                        ].map(({ nota, rotulo, imagem }) => (
                           <button
                             key={nota}
                             type="button"
                             aria-pressed={atendimentoNota === nota}
                             onClick={() => setAtendimentoNota(nota)}
-                            className={`flex min-h-14 items-center justify-between rounded-xl border px-4 text-left font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                            className={`group flex min-h-40 flex-col items-center justify-center gap-3 rounded-2xl border p-4 text-center font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                               atendimentoNota === nota
                                 ? "border-primary bg-primary/5 text-primary"
-                                : "border-border bg-card hover:border-primary/50"
+                                : "border-border bg-card hover:border-primary hover:bg-primary/5"
                             }`}
                           >
-                            <span className="flex items-center gap-3">
-                              <span className="flex size-8 items-center justify-center rounded-full bg-secondary text-sm font-bold text-secondary-foreground">
-                                {nota}
-                              </span>
+                            <Image
+                              src={imagem}
+                              alt=""
+                              width={88}
+                              height={88}
+                              className="size-22 object-contain"
+                            />
+                            <span className="text-sm font-semibold">
                               {rotulo}
                             </span>
-                            {nota === 3 && (
-                              <Star
-                                aria-hidden="true"
-                                className="size-5 text-amber-500"
-                              />
-                            )}
                           </button>
                         ))}
                       </div>
@@ -322,7 +337,7 @@ function PesquisaCiclo({
                             type="button"
                             aria-pressed={nps === nota}
                             onClick={() => setNps(nota)}
-                            className={`flex aspect-square min-h-10 items-center justify-center rounded-xl border text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                            className={`flex aspect-square min-h-10 items-center justify-center rounded-xl border text-xl font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:text-2xl ${
                               nps === nota
                                 ? "border-primary bg-primary text-primary-foreground"
                                 : "border-border bg-card hover:border-primary hover:bg-primary/5"
@@ -427,10 +442,10 @@ function PesquisaCiclo({
           </Card>
         )}
 
-        <footer className="mt-6 text-center text-xs text-muted-foreground">
-          Obrigado por escolher nossa farmácia.
-        </footer>
       </div>
+      <footer className="w-full pt-6 text-center text-xs text-muted-foreground">
+        Drogaria Nossa Senhora de Fátima, prazer em cuidar de você. <br />
+      </footer>
     </main>
   );
 }

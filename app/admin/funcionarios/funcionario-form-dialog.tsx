@@ -8,6 +8,7 @@ import { useActionState, useEffect, useRef, useState } from "react";
 import { createFuncionario } from "../../_actions/create-funcionario";
 import type { CreateFuncionarioState } from "../../_actions/create-funcionario";
 import { Button } from "@/components/ui/button";
+import { useFuncionariosFeedback } from "./feedback-provider";
 import {
   Card,
   CardContent,
@@ -44,6 +45,7 @@ export function FuncionarioFormDialog() {
 
 function FuncionarioForm({ onSuccess }: { onSuccess: () => void }) {
   const router = useRouter();
+  const showFeedback = useFuncionariosFeedback();
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const previewUrlRef = useRef<string | null>(null);
@@ -52,8 +54,11 @@ function FuncionarioForm({ onSuccess }: { onSuccess: () => void }) {
       const result = await createFuncionario(previousState, formData);
 
       if (result.success) {
+        showFeedback("Funcionário cadastrado com sucesso.", "success");
         router.refresh();
         onSuccess();
+      } else if (result.error) {
+        showFeedback(result.error, "error");
       }
 
       return result;

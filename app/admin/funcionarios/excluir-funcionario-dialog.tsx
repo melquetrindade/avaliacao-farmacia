@@ -4,6 +4,7 @@ import { Dialog } from "@base-ui/react/dialog";
 import { useRouter } from "next/navigation";
 import { useActionState, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useFuncionariosFeedback } from "./feedback-provider";
 import {
   deleteFuncionario,
   type DeleteFuncionarioState,
@@ -59,16 +60,24 @@ function ExcluirFuncionarioForm({
   onSuccess: () => void;
 }) {
   const router = useRouter();
+  const showFeedback = useFuncionariosFeedback();
   const [state, formAction, pending] = useActionState(
     async (previousState: DeleteFuncionarioState, formData: FormData) => {
       const result = await deleteFuncionario(previousState, formData);
 
       if (result.success) {
+        showFeedback(
+          "Funcionário excluído.",
+          result.warning ? "warning" : "success",
+          result.warning ?? undefined,
+        );
         router.refresh();
 
         if (!result.warning) {
           onSuccess();
         }
+      } else if (result.error) {
+        showFeedback(result.error, "error");
       }
 
       return result;

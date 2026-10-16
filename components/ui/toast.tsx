@@ -155,7 +155,7 @@ function ToastIcon({ type }: { type: string | undefined }) {
 
   if (type === "error") {
     icon = (
-      <OctagonXIcon className="text-destructive" aria-hidden="true" />
+      <OctagonXIcon className="text-white" aria-hidden="true" />
     )
   }
 
@@ -182,19 +182,46 @@ function ToastIcon({ type }: { type: string | undefined }) {
 function ToastList() {
   const { toasts } = ToastPrimitive.useToastManager()
 
-  return toasts.map((toastItem) => (
-    <Toast key={toastItem.id} toast={toastItem}>
-      <ToastContent>
-        <ToastIcon type={toastItem.type} />
-        <div className="flex min-w-0 flex-1 flex-col gap-1">
-          <ToastTitle />
-          <ToastDescription />
-        </div>
-        <ToastAction />
-        <ToastClose />
-      </ToastContent>
-    </Toast>
-  ))
+  return toasts.map((toastItem) => {
+    const typeClasses =
+      toastItem.type === "success"
+        ? {
+            toast: "border-emerald-700 bg-emerald-600 text-white",
+            description: "text-white/90",
+            close: "text-white/80 hover:text-white",
+          }
+        : toastItem.type === "error"
+          ? {
+              toast: "border-red-700 bg-red-600 text-white",
+              description: "text-white/90",
+              close: "text-white/80 hover:text-white",
+            }
+          : toastItem.type === "warning"
+            ? {
+                toast: "border-amber-600 bg-amber-100 text-amber-950",
+                description: "text-amber-900",
+                close: "text-amber-800 hover:text-amber-950",
+              }
+            : null
+
+    return (
+      <Toast
+        key={toastItem.id}
+        toast={toastItem}
+        className={typeClasses?.toast}
+      >
+        <ToastContent>
+          <ToastIcon type={toastItem.type} />
+          <div className="flex min-w-0 flex-1 flex-col gap-1">
+            <ToastTitle />
+            <ToastDescription className={typeClasses?.description} />
+          </div>
+          <ToastAction />
+          <ToastClose className={typeClasses?.close} />
+        </ToastContent>
+      </Toast>
+    )
+  })
 }
 
 function Toaster({

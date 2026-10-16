@@ -1,8 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useActionState, useEffect } from "react";
+import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
+import { useFuncionariosFeedback } from "./feedback-provider";
 import {
   setFuncionarioAtivo,
   type SetFuncionarioAtivoState,
@@ -21,16 +22,27 @@ export function FuncionarioStatusButton({
   ativo: boolean;
 }) {
   const router = useRouter();
+  const showFeedback = useFuncionariosFeedback();
   const [state, formAction, pending] = useActionState(
-    setFuncionarioAtivo,
+    async (previousState: SetFuncionarioAtivoState, formData: FormData) => {
+      const result = await setFuncionarioAtivo(previousState, formData);
+
+      if (result.success) {
+        showFeedback(
+          ativo
+            ? "Funcionário desativado com sucesso."
+            : "Funcionário ativado com sucesso.",
+          "success",
+        );
+        router.refresh();
+      } else if (result.error) {
+        showFeedback(result.error, "error");
+      }
+
+      return result;
+    },
     initialState,
   );
-
-  useEffect(() => {
-    if (state.success) {
-      router.refresh();
-    }
-  }, [router, state.success]);
 
   return (
     <form action={formAction} className="flex flex-col items-center gap-1">

@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useFuncionariosFeedback } from "./feedback-provider";
 import {
   Card,
   CardContent,
@@ -68,6 +69,7 @@ function EditarFuncionarioForm({
   onSuccess: () => void;
 }) {
   const router = useRouter();
+  const showFeedback = useFuncionariosFeedback();
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const previewUrlRef = useRef<string | null>(null);
   const [state, formAction, pending] = useActionState(
@@ -75,8 +77,11 @@ function EditarFuncionarioForm({
       const result = await editarFuncionario(previousState, formData);
 
       if (result.success) {
+        showFeedback("Funcionário atualizado com sucesso.", "success");
         router.refresh();
         onSuccess();
+      } else if (result.error) {
+        showFeedback(result.error, "error");
       }
 
       return result;
