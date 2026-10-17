@@ -100,7 +100,7 @@ export default async function DashboardPage({
           <div className="hidden lg:block" />
           <div className="flex min-w-0 items-center gap-3">
             <Image
-              src="/logo.jfif"
+              src="/logo01.png"
               alt=""
               width={48}
               height={48}

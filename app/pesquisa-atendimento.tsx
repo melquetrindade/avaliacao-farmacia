@@ -78,7 +78,7 @@ function TelaAgradecimento() {
       className="relative flex min-h-screen flex-col items-center justify-center bg-primary px-6 text-center text-primary-foreground"
     >
       <Image
-        src="/logo.jfif"
+        src="/logo01.png"
         alt="Drogaria Nossa Senhora de Fátima"
         width={80}
         height={80}
@@ -161,10 +161,10 @@ function PesquisaCiclo({
           : "O que podemos melhorar?";
 
   return (
-    <main className="flex min-h-screen flex-col items-center bg-background px-4 py-8 text-foreground sm:px-6">
-      <header className="fixed top-4 right-6 left-6 z-50 flex items-center justify-between gap-3 sm:right-8 sm:left-8">
+    <main className="flex min-h-screen flex-col items-center bg-background px-4 text-foreground sm:px-6">
+      <header className="sticky top-0 z-50 flex w-full max-w-6xl items-center justify-between gap-3 bg-background py-4">
         <Image
-          src="/logo.jfif"
+          src="/logo01.png"
           alt="Drogaria Nossa Senhora de Fátima"
           width={64}
           height={64}

@@ -18,7 +18,7 @@ export default async function Home() {
       <main className="flex min-h-screen items-center justify-center p-6">
         <section className="w-full max-w-lg rounded-3xl border border-border bg-card p-8 text-center shadow-sm">
           <Image
-            src="/logo.jfif"
+            src="/logo01.png"
             alt="Drogaria Nossa Senhora de Fátima"
             width={72}
             height={72}
