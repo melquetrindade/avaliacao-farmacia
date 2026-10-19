@@ -21,12 +21,14 @@ async function main() {
 
   await prisma.administrador.upsert({
     where: {
-      email: "melquetrindade654@gmail.com",
+      email: "eng.melquesedek@gmail.com",
     },
-    update: {},
+    update: {
+      senhaHash,
+    },
     create: {
       nome: "Melque Rodrigues",
-      email: "melquetrindade654@gmail.com",
+      email: "eng.melquesedek@gmail.com",
       senhaHash,
     },
   });
