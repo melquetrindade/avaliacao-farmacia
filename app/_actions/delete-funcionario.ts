@@ -91,19 +91,6 @@ export async function deleteFuncionario(
     };
   }
 
-  const avaliacoes = await db.avaliacaoAtendimento.count({
-    where: { colaboradorId: id },
-  });
-
-  if (avaliacoes > 0) {
-    return {
-      error:
-        "Não é possível excluir este funcionário porque ele possui avaliações vinculadas.",
-      success: false,
-      warning: null,
-    };
-  }
-
   try {
     await db.colaborador.delete({ where: { id } });
   } catch (error) {

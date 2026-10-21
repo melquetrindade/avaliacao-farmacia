@@ -54,7 +54,7 @@ model AvaliacaoAtendimento {
   melhoria        String[]
 
   colaboradorId   String
-  colaborador     Colaborador  @relation(fields: [colaboradorId],references: [id])
+  colaborador     Colaborador  @relation(fields: [colaboradorId], references: [id], onDelete: Cascade)
 
   @@index([colaboradorId])
   @@index([createdAt])

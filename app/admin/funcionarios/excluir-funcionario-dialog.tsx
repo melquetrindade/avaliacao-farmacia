@@ -113,8 +113,8 @@ function ExcluirFuncionarioForm({
         Excluir funcionário
       </Dialog.Title>
       <Dialog.Description className="mt-2 text-sm text-muted-foreground">
-        Tem certeza que deseja excluir {funcionarioNome}? Esta ação não pode ser
-        desfeita.
+        Tem certeza que deseja excluir {funcionarioNome}? Todas as avaliações
+        vinculadas também serão excluídas. Esta ação não pode ser desfeita.
       </Dialog.Description>
 
       <form action={formAction} className="mt-6">
