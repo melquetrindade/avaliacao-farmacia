@@ -1,8 +1,11 @@
 import Image from "next/image";
+import { connection } from "next/server";
 import { db } from "./_lib/prisma";
 import { PesquisaAtendimento } from "./pesquisa-atendimento";
 
 export default async function Home() {
+  await connection();
+
   const funcionarios = await db.colaborador.findMany({
     where: { ativo: true },
     orderBy: { nome: "asc" },
